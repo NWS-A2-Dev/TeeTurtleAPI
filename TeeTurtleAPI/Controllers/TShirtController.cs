@@ -11,26 +11,26 @@ namespace TeeTurtleAPI.Controllers
     [Route("[controller]/")]
     public class TShirtController : ControllerBase
     {
-        private TShirtRepository Repositrory;
+        private TShirtRepository Repository;
 
         public TShirtController(TShirtRepository repo)
         {
-            Repositrory = repo;
+            Repository = repo;
         }
 
         [HttpGet]
         public IEnumerable<TShirt> Get()
         {
-            return (Repositrory.TShirts
+            return (Repository.TShirts
                 .Take(10));
         }
 
-        [HttpGet("{page}")]
+        [HttpGet("page/{page}")]
         public IEnumerable<TShirt> Get(int page)
         {
             try
             {
-                return (Repositrory.TShirts
+                return (Repository.TShirts
                     .Skip(10 * (page - 1))
                     .Take(10));
             }
@@ -38,6 +38,13 @@ namespace TeeTurtleAPI.Controllers
             {
                 return (Array.Empty<TShirt>());
             }
+        }
+
+        [HttpGet("{id}")]
+        public TShirt Get(Guid id)
+        {
+            return (Repository.TShirts
+                .FirstOrDefault(i => i.Id == id));
         }
     }
 }

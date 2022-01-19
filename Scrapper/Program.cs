@@ -26,6 +26,7 @@ namespace Scrapper
                 IEnumerable<TShirt> tshirts = doc.DocumentNode.SelectNodes("//div[contains(@class, 'product-wrapper')]")
                     .Select(i => new TShirt
                     {
+                        Id = Guid.NewGuid(),
                         Name = i.SelectSingleNode(".//h6").InnerHtml,
                         Link = i.SelectSingleNode(".//a")
                             .GetAttributeValue("href", ""),
