@@ -22,7 +22,7 @@ namespace TeeTurtleAPI.Controllers
         public IEnumerable<TShirt> Get()
         {
             return (Repository.TShirts
-                .Take(10));
+                .Take(24));
         }
 
         [HttpGet("page/{page}")]
@@ -31,8 +31,8 @@ namespace TeeTurtleAPI.Controllers
             try
             {
                 return (Repository.TShirts
-                    .Skip(10 * (page - 1))
-                    .Take(10));
+                    .Skip(24 * (page - 1))
+                    .Take(24));
             }
             catch (Exception)
             {
