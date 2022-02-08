@@ -8,8 +8,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using TeeTurtleAPI.Logic;
 
 namespace TeeTurtleAPI
@@ -26,13 +28,14 @@ namespace TeeTurtleAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "TeeTurtleAPI", Version = "v1" });
             });
 
+            
             services.AddSingleton<TShirtRepository>();
         }
 
@@ -45,8 +48,17 @@ namespace TeeTurtleAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TeeTurtleAPI v1"));
             }
+            
 
             app.UseRouting();
+
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true) // allow any origin
+                .AllowCredentials()); // allow credentials
+
+            app.UseMiddleware<CorsMiddlewareCustom>();
 
             app.UseAuthorization();
 
@@ -55,5 +67,23 @@ namespace TeeTurtleAPI
                 endpoints.MapControllers();
             });
         }
+    }
+
+    public class CorsMiddlewareCustom
+    {
+        private readonly RequestDelegate _next;
+
+        public CorsMiddlewareCustom(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public async Task InvokeAsync(HttpContext context)
+        {
+            context.Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            await _next(context);
+        }
+
+        
     }
 }

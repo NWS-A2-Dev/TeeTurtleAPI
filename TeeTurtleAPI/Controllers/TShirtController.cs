@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Common;
+using Microsoft.AspNetCore.Cors;
 using TeeTurtleAPI.Logic;
 
 namespace TeeTurtleAPI.Controllers
